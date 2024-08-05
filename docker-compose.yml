@@ -1,0 +1,8 @@
+services:
+  fileserver:
+    container_name: fileserver
+    image: nollor/fileserver:latest
+    ports:
+      - "80:80"
+    volumes:
+      - /opt/uploads:/opt/uploads

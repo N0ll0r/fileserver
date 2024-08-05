@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Configuration de l'application
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'sh'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Assure que le répertoire d'upload existe

@@ -19,23 +19,26 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return 'No file part', 400
-        file = request.files['file']
-        if file.filename == '':
-            return 'No selected file', 400
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('index'))
-        else:
-            return 'File type not allowed', 400
+        if 'file' in request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('index'))
     files_list = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('index.html', files=files_list)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/view/<filename>')
+def view_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 @app.route('/delete/<filename>', methods=['POST'])
 def delete_file(filename):
@@ -44,8 +47,7 @@ def delete_file(filename):
         os.remove(file_path)
         return redirect(url_for('index'))
     else:
-        abort(404)  # Fichier non trouvé
+        abort(404)
 
 if __name__ == '__main__':
     app.run(port=80, host='0.0.0.0', debug=False)
- 

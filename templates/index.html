@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionnaire de Fichiers</title>
+    <!-- Lien vers le CDN de Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .file-table th, .file-table td {
+            text-align: center;
+        }
+    </style>
+    <script>
+        function confirmDelete() {
+            return confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Téléversement de Fichiers</h1>
+        
+        <form method="post" enctype="multipart/form-data" class="mb-4">
+            <div class="form-group">
+                <label for="file">Choisir un fichier</label>
+                <input type="file" id="file" name="file" class="form-control-file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Téléverser</button>
+        </form>
+        
+        <h2 class="text-center mb-4">Fichiers Téléversés</h2>
+        <table class="table table-bordered file-table">
+            <thead>
+                <tr>
+                    <th>Nom du Fichier</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file }}</td>
+                    <td>
+                        <a href="{{ url_for('uploaded_file', filename=file) }}" class="btn btn-info btn-sm">Voir/Télécharger</a>
+                        <form action="{{ url_for('delete_file', filename=file) }}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Lien vers le CDN de Bootstrap JS et jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+ 

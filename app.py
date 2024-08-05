@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory, abort
-from werkzeug.utils import secure_filename  # Assure-toi d'importer secure_filename
+from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
@@ -19,12 +19,17 @@ def allowed_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if 'file' in request.files:
-            file = request.files['file']
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)  # Assure-toi que secure_filename est importé
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('index'))
+        if 'file' not in request.files:
+            return 'No file part', 400
+        file = request.files['file']
+        if file.filename == '':
+            return 'No selected file', 400
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('index'))
+        else:
+            return 'File type not allowed', 400
     files_list = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('index.html', files=files_list)
 
@@ -42,5 +47,5 @@ def delete_file(filename):
         abort(404)  # Fichier non trouvé
 
 if __name__ == '__main__':
-    app.run(port='80', host='0.0.0.0', debug=False)
+    app.run(port=80, host='0.0.0.0', debug=False)
  
